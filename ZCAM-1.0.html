@@ -1,14 +1,17 @@
 <html>
+<html lang="en">
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
 <title>Z-CAM Controller</title>
 
 <script language="JavaScript">
 
-function httpGet(theUrl,VARf) {
+// Send a request
+function httpGet(theUrl, VARf) {
 
-	theUrl= theUrl + VARf;  
+	theUrl = theUrl + VARf;  
 	let xmlHttpReq = new XMLHttpRequest();
   
 	xmlHttpReq.open("GET", theUrl, false); 
@@ -17,24 +20,112 @@ function httpGet(theUrl,VARf) {
 	console.log(VARf);
   
 	return xmlHttpReq.responseText;
-
 }
  
+// Send a command to change configuration
+function setConfig(command, def) {
+
+  theCompleteUrl = 'http://10.98.32.1/ctrl/set?' + command + "=" + def;  
+  let xmlHttpReq = new XMLHttpRequest();
+
+  xmlHttpReq.open("GET", theCompleteUrl, false); 
+
+  xmlHttpReq.send(null);
+  console.log(theCompleteUrl);
+
+  return xmlHttpReq.responseText;
+}
+
+// Update the slider
 function updateSlider(slideAmount) {
         var sliderDiv = document.getElementById("sliderAmount");
-            sliderDiv.innerHTML = slideAmount;
+        sliderDiv.innerHTML = slideAmount;
     }
 
+// Display the new value
 function DisplayChange(newvalue) {
                 document.getElementById(
                   "value").innerHTML = newvalue;
             }
 
-//console.log(httpGet('https://jsonplaceholder.typicode.com/posts'));
+// Toggles the checkbox from OFF to ON and vice-versa.
+function toggle(checkbox) {
+            switch (checkbox.value) {
+                case "ON":
+                    checkbox.value = "OFF";
+                    httpGet('http://10.98.32.1/ctrl/rec?action=','start');
+                    start();
+                    break;
+                case "OFF":
+                    checkbox.value = "ON";
+                    httpGet('http://10.98.32.1/ctrl/rec?action=','stop');
+                    end();
+                    break;
+            }
+}  
+
+// update remaining time
+function updateRecRemaining()
+{
+    $.getJSON("/ctrl/rec?action=remain", function( response ) {
+        if (response.code != 0) {
+            $("#info_remain").text("00h00m");
+            $("#info_remain").css("color", "yellow");
+            $("#btn_rec").css('background', 'darkred');
+            $("#btn_rec").prop("disabled", true);
+        } else {
+            updateRemainLable(response.msg);
+        }
+    });
+}
+
+var startTime, endTime;
+
+function start() {
+  startTime = performance.now();
+};
+
+function end() {
+  endTime = performance.now();
+  var timeDiff = endTime - startTime; //in ms
+  // strip the ms
+  timeDiff /= 1000;
+
+  // get seconds 
+  var seconds = Math.round(timeDiff);
+  console.log(seconds + " seconds");
+}
 
 </script>
 
 <style>
+
+body {
+    margin:5px 5px 0px 5px;
+    height:100%;
+    background-color: #3a464f;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    color: white;
+  }
+
+h2 {
+  border-left: 6px solid DodgerBlue;
+  border-right: 6px solid DodgerBlue;
+  text-align: center;
+}
+
+h4 {
+  text-align: left;
+  margin: 4px 2px;
+}
+
+h5 {
+  text-align: left;
+}
+
+p {
+  text-align: left;
+}
 
 .button {
   border: white;
@@ -49,10 +140,6 @@ function DisplayChange(newvalue) {
   cursor: pointer;
 }
 
-.buttonStart {background-color: #4CAF50;}
-.buttonStop {background-color: #BA0000;}
-.buttonPhoto {background-color: #9c6cf7;}
-
 .buttonOthers {
 	background-color: #3a464f;
 	border: 1px solid #968c8c;
@@ -63,37 +150,9 @@ function DisplayChange(newvalue) {
   color: white;
 }
 
-
-h2 {
-  font-family: Georgia, "Times New Roman", Times, serif;
-  color: white;
-  border-left: 6px solid DodgerBlue;
-  border-right: 6px solid DodgerBlue;
-  text-align: center;
-}
-
-h4 {
-  font-family: Georgia, "Times New Roman", Times, serif;
-  color: white;
-  text-align: right;
-}
-
-h5 {
-  font-family: Georgia, "Times New Roman", Times, serif;
-  color: white;
-  text-align: left;
-}
-
-.p {
-  font-family: Georgia, "Times New Roman", Times, serif;
-  color: white;
-  text-align: left;
-}
-
 .slidecontainer {
   width: 100%; 
-  font-family: Georgia, "Times New Roman", Times, serif;
-  color: white;
+    color: white;
 }
 
 .slider {
@@ -131,60 +190,175 @@ h5 {
   cursor: pointer; 
 }
 
+#preview {
+    position: relative;
+    width: 75%;
+    height: 100%;
+    float: left;
+    }
+  
+#stream {
+    position: absolute;
+    width: 100%;
+}
+
+#info_bar {
+    position: relative;
+    margin: 20px 20px;
+    color: white;
+    }
+
+.info {
+    display: inline;
+    text-shadow:#000 1px 0px 2px;
+  }
+
+#info_bar :not(:nth-child(2)) {
+    margin-left: 2em;
+}
+
+#info_bar :first-child {
+    margin-left: 0px;
+}
+
+#info_bar :nth-child(2) {
+    margin-left: 0.3em;
+}
+             
+/* toggle in label designing */
+.toggle {
+  position : relative ;
+  display : inline-block;
+  width: 100px;
+  height: 50px;
+  background-color: rgb(179, 12, 12);
+  border-radius: 30px;
+  border: 2px solid gray;
+}
+               
+/* After slide changes */
+.toggle:after {
+  content: '';
+  position: absolute;
+  width: 49px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: gray;
+  top: 1px;
+  left: 1px;
+  transition:  all 0.5s;
+}
+                         
+/* Checkbox checked effect */
+.checkbox:checked + .toggle::after {
+  left : 51px;
+}
+               
+/* Checkbox checked toggle label bg color */
+.checkbox:checked + .toggle {
+  background-color: green;
+}
+               
+/* Checkbox vanished */
+.checkbox {
+  display : none;
+}
 </style>
 
 </head>
 
-<h2> <strong> Z-CAM Small Controller </strong> - 20 July 2022</h2>
+<h2> Z-CAM Small Controller - 24 July 2022</h2>
 
 <hr>
-<button class="button buttonStart" 
-	accesskey="z" 
-	onclick="httpGet('http://10.98.32.1/ctrl/rec?action=','start')">Start REC</button>
-<button class="button buttonStop" 
-	accesskey="x" 
-	onclick="httpGet('http://10.98.32.1/ctrl/rec?action=','stop')">Stop REC</button>
-<button class="button buttonPhoto" 
-	accesskey="x" 
-	onclick="httpGet('http://10.98.32.1/ctrl/still/?action=','cap')">Photo</button><hr>
+<center>
+<span><strong>Record</strong></span>
+  <input 
+  type="checkbox" 
+  id="switch" 
+  class="checkbox"
+  value="ON" 
+  onclick="toggle(this);" />
+  
+  <label for="switch" class="toggle">     
+    <p>STOP START</p>
+    </label>
 
+<p class="info" id="seconds">00s</p>
+</center>
 
-
-<a href="">
-  <div class="button" id="httpGet('http://10.98.32.1/ctrl/rec?action=', remain)">0</div>
-</a>
-
-<h4> <strong> Slider is almost working!</strong> </h4>
+<hr>
 
 <div class="slidecontainer">
-
-<span id="value">0</span>
 
 <input type="range" 
 	id="rangeInput" 
 	name="rangeInput" 
 	value="0"
-	min="-10000"	
-	max="10000" 
+	min="-3757"	
+	max="5000" 
 	class="slider" 
-      	oninput="DisplayChange(this.value)"
-	onchange="httpGet('http://10.98.32.1/ctrl/set?lens_focus_pos=',value)">
+  oninput="DisplayChange(this.value)"
+	onchange="setConfig('lens_focus_pos', 'value')">
 
+<h4> <strong> Focus Slider </strong> <span id="value">0</span> </h4> 
 </div>
 <hr>
 
-<button class="button buttonOthers" accesskey="-" onclick="httpGet('http://10.98.32.1/ctrl/set?mf_drive=','+10')">Focus -</button>
-<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?mf_drive=','+50')">Focus --</button>
-<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?mf_drive=','+100')">Focus ---</button>
-<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?mf_drive=','-100')">Focus +++</button>
-<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?mf_drive=','-50')">Focus ++</button>
-<button class="button buttonOthers" accesskey="+" onclick="httpGet('http://10.98.32.1/ctrl/set?mf_drive=','-10')">Focus +</button>
-<hr>
-<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?lens_focus_pos=','0')">Focus 28cm</button>
-<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?lens_focus_pos=','4000')">Focus 1m</button>
-<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?lens_focus_pos=','5000')">Infinito</button>
-<hr>
-<h4> <strong> Enjoy!</strong> </h4>
+<div>
+  <button class="button buttonOthers" accesskey="-" onclick="setConfig('mf_drive', +10)" oninput="DisplayChange(this.value)">Focus -</button>
+  <button class="button buttonOthers" onclick="setConfig('mf_drive', +50)">Focus --</button>
+  <button class="button buttonOthers" onclick="setConfig('mf_drive', +100)">Focus ---</button>
+  <button class="button buttonOthers" onclick="setConfig('mf_drive', -100)">Focus +++</button>
+  <button class="button buttonOthers" onclick="setConfig('mf_drive', -50)">Focus ++</button>
+  <button class="button buttonOthers" accesskey="+" onclick="setConfig('mf_drive', -10)">Focus +</button>
+</div>
+<div>
+  <button class="button buttonOthers" onclick="setConfig('lens_focus_pos', -3757)">Focus MIN</button>
+  <button class="button buttonOthers" onclick="setConfig('lens_focus_pos', 0)">Focus MED-</button>
+  <button class="button buttonOthers" onclick="setConfig('lens_focus_pos', 4000)">Focus MED+</button>
+  <button class="button buttonOthers" onclick="setConfig('lens_focus_pos', 5000)">Infinito</button>
+</div>
+<div> 
+  <button class="button buttonOthers" 
+  onclick="setConfig('lens_zoom', 'in')">TEST</button>
+</div>
 
-<body bgcolor="#2c3338">
+<hr>
+
+<div id="preview">
+  
+  <!--<img id="stream" src="http://10.98.32.1/mjpeg_stream" />--->
+  
+<span style="display:inline-block">
+    <label for=shutter style="display:block">Shutter</label>
+    <input type=number id="shutter" name="shutter"
+    value="1" min="1" max="2000" 
+    onchange="setConfig('iris', 'value')"/>
+</span>
+
+<span style="display:inline-block">
+    <label for=aperture  style="display:block">Aperture</label>
+    <input type=number id="aperture" name="aperture"
+    value="2.8" min="2.8" max="22"
+    onchange="setConfig('iris', 'value')"/>
+</span>
+
+<span style="display:inline-block">
+  <label for=ISO  style="display:block">ISO</label>
+  <input type=number id="ISO" name="ISO"
+  value="3200" min="400" max="128000" 
+  onchange="setConfig('iso', 'value')"/>
+</span>
+
+<span style="display:inline-block">
+  <label for=WB  style="display:block">WB (K)</label>
+  <input type=number id="WB" name="WB"
+  value="3500" min="400" max="128000"
+  onchange="setConfig('mwb', 'value')"/>
+</span>
+      
+  </div>
+
+</div> 
+
 </html>
