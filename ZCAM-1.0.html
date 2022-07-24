@@ -1,0 +1,190 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>Z-CAM Controller</title>
+
+<script language="JavaScript">
+
+function httpGet(theUrl,VARf) {
+
+	theUrl= theUrl + VARf;  
+	let xmlHttpReq = new XMLHttpRequest();
+  
+	xmlHttpReq.open("GET", theUrl, false); 
+  
+	xmlHttpReq.send(null);
+	console.log(VARf);
+  
+	return xmlHttpReq.responseText;
+
+}
+ 
+function updateSlider(slideAmount) {
+        var sliderDiv = document.getElementById("sliderAmount");
+            sliderDiv.innerHTML = slideAmount;
+    }
+
+function DisplayChange(newvalue) {
+                document.getElementById(
+                  "value").innerHTML = newvalue;
+            }
+
+//console.log(httpGet('https://jsonplaceholder.typicode.com/posts'));
+
+</script>
+
+<style>
+
+.button {
+  border: white;
+  border-radius: 4px;
+  color: white;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.buttonStart {background-color: #4CAF50;}
+.buttonStop {background-color: #BA0000;}
+.buttonPhoto {background-color: #9c6cf7;}
+
+.buttonOthers {
+	background-color: #3a464f;
+	border: 1px solid #968c8c;
+	} 
+
+.buttonOthers:hover {
+  background-color: #008CBA;
+  color: white;
+}
+
+
+h2 {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: white;
+  border-left: 6px solid DodgerBlue;
+  border-right: 6px solid DodgerBlue;
+  text-align: center;
+}
+
+h4 {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: white;
+  text-align: right;
+}
+
+h5 {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: white;
+  text-align: left;
+}
+
+.p {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: white;
+  text-align: left;
+}
+
+.slidecontainer {
+  width: 100%; 
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: white;
+}
+
+.slider {
+  -webkit-appearance: none;  
+  appearance: none;
+  width: 100%; 
+  height: 15px; 
+  border-radius: 5px;  
+  background: #d3d3d3; 
+  outline: none; 
+  opacity: 0.7; 
+  -webkit-transition: .2s; 
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; 
+  appearance: none;
+  width: 25px; 
+  height: 25px; 
+  border-radius: 50%;  
+  background: #046daa; 
+  cursor: pointer; 
+}
+
+.slider::-moz-range-thumb {
+  width: 25px; 
+  height: 25px; 
+  border-radius: 50%;
+  background: #046daa; 
+  cursor: pointer; 
+}
+
+</style>
+
+</head>
+
+<h2> <strong> Z-CAM Small Controller </strong> - 20 July 2022</h2>
+
+<hr>
+<button class="button buttonStart" 
+	accesskey="z" 
+	onclick="httpGet('http://10.98.32.1/ctrl/rec?action=','start')">Start REC</button>
+<button class="button buttonStop" 
+	accesskey="x" 
+	onclick="httpGet('http://10.98.32.1/ctrl/rec?action=','stop')">Stop REC</button>
+<button class="button buttonPhoto" 
+	accesskey="x" 
+	onclick="httpGet('http://10.98.32.1/ctrl/still/?action=','cap')">Photo</button><hr>
+
+
+
+<a href="">
+  <div class="button" id="httpGet('http://10.98.32.1/ctrl/rec?action=', remain)">0</div>
+</a>
+
+<h4> <strong> Slider is almost working!</strong> </h4>
+
+<div class="slidecontainer">
+
+<span id="value">0</span>
+
+<input type="range" 
+	id="rangeInput" 
+	name="rangeInput" 
+	value="0"
+	min="-10000"	
+	max="10000" 
+	class="slider" 
+      	oninput="DisplayChange(this.value)"
+	onchange="httpGet('http://10.98.32.1/ctrl/set?lens_focus_pos=',value)">
+
+</div>
+<hr>
+
+<button class="button buttonOthers" accesskey="-" onclick="httpGet('http://10.98.32.1/ctrl/set?mf_drive=','+10')">Focus -</button>
+<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?mf_drive=','+50')">Focus --</button>
+<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?mf_drive=','+100')">Focus ---</button>
+<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?mf_drive=','-100')">Focus +++</button>
+<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?mf_drive=','-50')">Focus ++</button>
+<button class="button buttonOthers" accesskey="+" onclick="httpGet('http://10.98.32.1/ctrl/set?mf_drive=','-10')">Focus +</button>
+<hr>
+<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?lens_focus_pos=','0')">Focus 28cm</button>
+<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?lens_focus_pos=','4000')">Focus 1m</button>
+<button class="button buttonOthers" onclick="httpGet('http://10.98.32.1/ctrl/set?lens_focus_pos=','5000')">Infinito</button>
+<hr>
+<h4> <strong> Enjoy!</strong> </h4>
+
+<body bgcolor="#2c3338">
+</html>
