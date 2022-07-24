@@ -65,20 +65,18 @@ function toggle(checkbox) {
 }  
 
 // update remaining time
-function updateRecRemaining()
-{
-    $.getJSON("/ctrl/rec?action=remain", function( response ) {
+function updateRecRemaining() {
+  httpGet('http://10.98.32.1/ctrl/rec?action=','remain'); {
         if (response.code != 0) {
             $("#info_remain").text("00h00m");
             $("#info_remain").css("color", "yellow");
-            $("#btn_rec").css('background', 'darkred');
-            $("#btn_rec").prop("disabled", true);
-        } else {
+          } else {
             updateRemainLable(response.msg);
         }
-    });
+    };
 }
 
+// calculate video time
 var startTime, endTime;
 
 function start() {
