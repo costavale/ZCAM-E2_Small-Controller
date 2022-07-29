@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    
+    <title>Z-CAM Small Controller</title>
+    <link rel="stylesheet" href="./style.css" media="screen">
+    <script src='./renderer.js'></script>
+          
+    </head>
+    
+<div class="box1">
+    <center>
+    <span><strong>Record</strong></span>
+      <input 
+      type="checkbox" 
+      title="Press ALT+Z to activate"
+      id="switch" 
+      class="checkbox"
+      value="ON" 
+      accesskey="z"
+      onclick="toggle(this);" />
+      
+      <label for="switch" class="toggle">     
+        <p>STOP START</p>
+        </label>
+    </center>
+    <center>
+      Last video recorded
+    <p class="info" id="mySeconds"></p> 
+    seconds  
+    </center>
+  </div>   
+    <hr>
+    
+    <div class="slidecontainer">
+    
+    <input type="range" 
+      id="rangeInput" 
+      name="rangeInput" 
+      value="0"
+      min="-3757"	
+      max="5000" 
+      class="slider" 
+      oninput="DisplayChange(this.value)"
+      onchange="setConfig('lens_focus_pos', 'value')">
+    
+    <h4> <strong> Focus Slider </strong> <span id="value">0</span> </h4> 
+    </div>
+    <hr>
+    
+    <div>
+      <button class="button buttonOthers" accesskey="-" onclick="setConfig('mf_drive', +10)" oninput="DisplayChange(this.value)">Focus -</button>
+      <button class="button buttonOthers" onclick="setConfig('mf_drive', +50)">Focus --</button>
+      <button class="button buttonOthers" onclick="setConfig('mf_drive', +100)">Focus ---</button>
+      <button class="button buttonOthers" onclick="setConfig('mf_drive', -100)">Focus +++</button>
+      <button class="button buttonOthers" onclick="setConfig('mf_drive', -50)">Focus ++</button>
+      <button class="button buttonOthers" accesskey="+" onclick="setConfig('mf_drive', -10)">Focus +</button>
+    </div>
+    <div>
+      <button class="button buttonOthers" onclick="setConfig('lens_focus_pos', -3757)">Focus MIN</button>
+      <button class="button buttonOthers" onclick="setConfig('lens_focus_pos', 0)">Focus MED-</button>
+      <button class="button buttonOthers" onclick="setConfig('lens_focus_pos', 4000)">Focus MED+</button>
+      <button class="button buttonOthers" onclick="setConfig('lens_focus_pos', 5000)">Infinito</button>
+    </div>
+        
+    <hr>
+    
+<div id="preview">
+      
+      <!--<img id="stream" src="http://10.98.32.1/mjpeg_stream" />--->
+      
+    <span style="display:inline-block">
+        <label for="shutter-choice" style="display:block">Shutter</label>
+        <input list="shutter-list" id="shutter-choice" name="shutter-choice"
+        onchange="setConfig('iris', 'value')"/>
+
+        <datalist id="shutter-list">
+          <option value="200">
+          <option value="600">
+          <option value="1000">
+          <option value="1500">
+          <option value="2000">
+      </datalist>
+
+    </span>
+    
+    <span style="display:inline-block">
+        <label for=aperture  style="display:block">Aperture</label>
+        <input type=number id="aperture" name="aperture"
+        value="2.8" min="2.8" max="22"
+        onchange="setConfig('iris', 'value')"/>
+    </span>
+    
+    <span style="display:inline-block">
+      <label for=ISO  style="display:block">ISO</label>
+      <input type=number id="ISO" name="ISO"
+      value="3200" min="400" max="128000" 
+      onchange="setConfig('iso', 'value')"/>
+    </span>
+    
+    <span style="display:inline-block">
+      <label for=WB  style="display:block">WB (K)</label>
+      <input type=number id="WB" name="WB"
+      value="3500" min="400" step="200" max="128000"
+      onchange="setConfig('mwb', 'value')"/>
+    </span>
+          
+    <!--Remaining time: 
+    <p class="info" id="myRemainingTime"> minutes</p> --->
+
+      </div>
+    
+    </div> 
+<div >
+    <left> 29 July 2022</left>
+  </div>
+</html>
