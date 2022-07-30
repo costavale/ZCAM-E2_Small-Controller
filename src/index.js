@@ -11,13 +11,15 @@ const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 650,
-    height: 350,
+    height: 500,
+    frame: false,
     icon: './build/icon.png',
     autoHideMenuBar: true,
-    frame: false,
     transparent: true,
-    titleBarStyle: "hidden"
-  
+    webPreferences: {
+      nodeIntegration: true
+  }
+    
   });
 
   // and load the index.html of the app.

@@ -52,15 +52,19 @@ function httpGet(theUrl, VARf) {
                       end();
                       break;
               }
-  }  
+              
+              updateRecRemaining();
+            }  
   
   // update remaining time
   function updateRecRemaining() {
     RecRemaining = httpGet('http://10.98.32.1/ctrl/rec?action=','remain'); 
-          console.log(RecRemaining);
-    
-          document.getElementById("myRemainingTime").innerHTML = RecRemaining;
-  }
+          RecRemaining = response.msg.split(':');
+          console.log($("RR_min").val(RecRemaining[3]));
+          
+          document.getElementById("RR_min").innerHTML = Recminutes;          
+
+        }
   
   var startTime, endTime;
   
@@ -81,3 +85,54 @@ function httpGet(theUrl, VARf) {
 
     
   }
+
+  const remote = require('electron').remote;
+
+const win = remote.getCurrentWindow(); /* Note this is different to the
+html global `window` variable */
+
+// When document has loaded, initialise
+document.onreadystatechange = (event) => {
+    if (document.readyState == "complete") {
+        handleWindowControls();
+    }
+};
+
+window.onbeforeunload = (event) => {
+    /* If window is reloaded, remove win event listeners
+    (DOM element listeners get auto garbage collected but not
+    Electron win listeners as the win is not dereferenced unless closed) */
+    win.removeAllListeners();
+}
+
+function handleWindowControls() {
+    // Make minimise/maximise/restore/close buttons work when they are clicked
+    document.getElementById('min-button').addEventListener("click", event => {
+        win.minimize();
+    });
+
+    document.getElementById('max-button').addEventListener("click", event => {
+        win.maximize();
+    });
+
+    document.getElementById('restore-button').addEventListener("click", event => {
+        win.unmaximize();
+    });
+
+    document.getElementById('close-button').addEventListener("click", event => {
+        win.close();
+    });
+
+    // Toggle maximise/restore buttons when maximisation/unmaximisation occurs
+    toggleMaxRestoreButtons();
+    win.on('maximize', toggleMaxRestoreButtons);
+    win.on('unmaximize', toggleMaxRestoreButtons);
+
+    function toggleMaxRestoreButtons() {
+        if (win.isMaximized()) {
+            document.body.classList.add('maximized');
+        } else {
+            document.body.classList.remove('maximized');
+        }
+    }
+}

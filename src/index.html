@@ -1,6 +1,35 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <header id="titlebar">
+      <div id="drag-region">
+        
+        <div id="window-title">
+          <span>ZCAM-E2 Small Controller</span>
+        </div>
+
+      <div id="window-controls">
+
+      <div class="button" id="min-button">
+        <img class="icon" srcset="icons/min-w-10.png 1x, icons/min-w-12.png 1.25x, icons/min-w-15.png 1.5x, icons/min-w-15.png 1.75x, icons/min-w-20.png 2x, icons/min-w-20.png 2.25x, icons/min-w-24.png 2.5x, icons/min-w-30.png 3x, icons/min-w-30.png 3.5x" draggable="false" />
+      </div>
+
+      <div class="button" id="max-button">
+        <img class="icon" srcset="icons/max-w-10.png 1x, icons/max-w-12.png 1.25x, icons/max-w-15.png 1.5x, icons/max-w-15.png 1.75x, icons/max-w-20.png 2x, icons/max-w-20.png 2.25x, icons/max-w-24.png 2.5x, icons/max-w-30.png 3x, icons/max-w-30.png 3.5x" draggable="false" />
+      </div>
+
+      <div class="button" id="restore-button">
+        <img class="icon" srcset="icons/restore-w-10.png 1x, icons/restore-w-12.png 1.25x, icons/restore-w-15.png 1.5x, icons/restore-w-15.png 1.75x, icons/restore-w-20.png 2x, icons/restore-w-20.png 2.25x, icons/restore-w-24.png 2.5x, icons/restore-w-30.png 3x, icons/restore-w-30.png 3.5x" draggable="false" />
+      </div>
+
+      <div class="button" id="close-button">
+        <img class="icon" srcset="icons/close-w-10.png 1x, icons/close-w-12.png 1.25x, icons/close-w-15.png 1.5x, icons/close-w-15.png 1.75x, icons/close-w-20.png 2x, icons/close-w-20.png 2.25x, icons/close-w-24.png 2.5x, icons/close-w-30.png 3x, icons/close-w-30.png 3.5x" draggable="false" />
+      </div>
+
+    </div>
+  </div>
+</header>
+    
     <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
     
     <title>Z-CAM Small Controller</title>
@@ -8,6 +37,8 @@
     <script src='./renderer.js'></script>
           
     </head>
+  
+<div id="main">
     
 <div class="box1">
     <center>
@@ -27,7 +58,7 @@
     </center>
     <center>
       Last video recorded
-    <p class="info" id="mySeconds"></p> 
+    <p class="info" id="mySeconds">00</p> 
     seconds  
     </center>
   </div>   
@@ -43,7 +74,7 @@
       max="5000" 
       class="slider" 
       oninput="DisplayChange(this.value)"
-      onchange="setConfig('lens_focus_pos', 'value')">
+      onchange="setConfig('lens_focus_pos', this.value)">
     
     <h4> <strong> Focus Slider </strong> <span id="value">0</span> </h4> 
     </div>
@@ -66,53 +97,74 @@
         
     <hr>
     
-<div id="preview">
-      
-      <!--<img id="stream" src="http://10.98.32.1/mjpeg_stream" />--->
+    <div id="info_bar">
       
     <span style="display:inline-block">
         <label for="shutter-choice" style="display:block">Shutter</label>
         <input list="shutter-list" id="shutter-choice" name="shutter-choice"
-        onchange="setConfig('iris', 'value')"/>
+        onchange="setConfig('shutter_time', 'value')" style="width: 100px"/>
 
         <datalist id="shutter-list">
-          <option value="200">
-          <option value="600">
-          <option value="1000">
-          <option value="1500">
-          <option value="2000">
+            <option value="1/30s">
+            <option value="1/40s">
+            <option value="1/50s">
+        </datalist>
+    </span>
+    
+    <span style="display:inline-block">
+        <label for="aperture-choice"  style="display:block">Aperture</label>
+        <input list="aperture-list" id="aperture-choice" name="aperture-choice"
+        onchange="setConfig('iris', 'aperture-list')" style="width: 100px"/>
+
+        <datalist id="aperture-list">
+          <option value="400">
+          <option value="500">
+          <option value="640">
       </datalist>
+    </span>
+    
+    <span style="display:inline-block">
+      <label for="iso-choice" style="display:block">ISO</label>
+        <input list="iso-list" id="iso-choice" name="iso-choice"
+        onclick="setConfig('iso', 'value')" style="width: 100px"/>
 
+        <datalist id="iso-list">
+          <option value="">--Please choose an option--</option>  
+          <option value="400">
+            <option value="500">
+            <option value="640">
+            <option value="2000">
+        </datalist>
     </span>
     
     <span style="display:inline-block">
-        <label for=aperture  style="display:block">Aperture</label>
-        <input type=number id="aperture" name="aperture"
-        value="2.8" min="2.8" max="22"
-        onchange="setConfig('iris', 'value')"/>
-    </span>
-    
-    <span style="display:inline-block">
-      <label for=ISO  style="display:block">ISO</label>
-      <input type=number id="ISO" name="ISO"
-      value="3200" min="400" max="128000" 
-      onchange="setConfig('iso', 'value')"/>
-    </span>
-    
-    <span style="display:inline-block">
-      <label for=WB  style="display:block">WB (K)</label>
-      <input type=number id="WB" name="WB"
-      value="3500" min="400" step="200" max="128000"
-      onchange="setConfig('mwb', 'value')"/>
-    </span>
-          
-    <!--Remaining time: 
-    <p class="info" id="myRemainingTime"> minutes</p> --->
+      <label for="wb-choice" style="display:block">White Balance</label>
+        <input list="wb-list" id="wb-choice" name="wb-choice"
+        onchange="setConfig('mwb', 'value')" style="width: 100px"/>
 
-      </div>
+        <datalist id="wb-list">
+            <option value="3100">
+            <option value="3500">
+            <option value="3800">
+            <option value="4000">
+        </datalist>
+    </span>
     
-    </div> 
-<div >
-    <left> 29 July 2022</left>
   </div>
+
+  <hr>
+  <div id="preview">
+  
+   <img id="stream" src="http://10.98.32.1/mjpeg_stream" />
+         
+  </div>
+     
+<div>
+  <span style="display:inline-block; margin-top: 20px;">
+    <label for="RR_min" style="display:block">Remaining time:</label>
+    <p class="info" id="RR_min"> 00 </p>
+  </span>
+    </div>
+
+</div>
 </html>
