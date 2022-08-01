@@ -41,7 +41,7 @@
 <div id="main">
     
 <div class="box1">
-    <center>
+    
     <span><strong>Record</strong></span>
       <input 
       type="checkbox" 
@@ -55,12 +55,17 @@
       <label for="switch" class="toggle">     
         <p>STOP START</p>
         </label>
-    </center>
-    <center>
+    
+    <div>
       Last video recorded
-    <p class="info" id="mySeconds">00</p> 
-    seconds  
-    </center>
+      <p class="info" id="mySeconds">00</p> 
+      seconds  
+    </div>
+    <div>
+      Remaining time:
+    <p class="info" id="RR_min"> 00 </p>
+    </div>
+    
   </div>   
     <hr>
     
@@ -88,6 +93,7 @@
       <button class="button buttonOthers" onclick="setConfig('mf_drive', -50)">Focus ++</button>
       <button class="button buttonOthers" accesskey="+" onclick="setConfig('mf_drive', -10)">Focus +</button>
     </div>
+    
     <div>
       <button class="button buttonOthers" onclick="setConfig('lens_focus_pos', -3757)">Focus MIN</button>
       <button class="button buttonOthers" onclick="setConfig('lens_focus_pos', 0)">Focus MED-</button>
@@ -97,74 +103,129 @@
         
     <hr>
     
-    <div id="info_bar">
+  <div id="info_bar">
       
     <span style="display:inline-block">
-        <label for="shutter-choice" style="display:block">Shutter</label>
-        <input list="shutter-list" id="shutter-choice" name="shutter-choice"
-        onchange="setConfig('shutter_time', 'value')" style="width: 100px"/>
+        <label for="shutter-list" style="display:block">Shutter</label>
+          <select id="shutter-list"
+                  onclick="setConfig('shutter_time', this.value)" 
+                  style="width: 100px">
+            <option value="Auto">Auto</option>  
+            <option value="1/30">1/30s</option>
+            <option value="1/40">1/40s</option>
+            <option value="1/48">1/48s</option>
+            <option value="1/50" selected="selected">1/50s</option>
+            <option value="1/60">1/60s</option>
+            <option value="1/80">1/80s</option>
+            <option value="1/100">1/100s</option>
+            <option value="1/125">1/125s</option>
+            <option value="1/160">1/160s</option>
+            <option value="1/200">1/200s</option>
+            <option value="1/240">1/240s</option>
+            <option value="1/250">1/250s</option>
+            <option value="1/320">1/320s</option>
+            <option value="1/400">1/400s</option>
+            <option value="1/500">1/500s</option>
+            <option value="1/640">1/640s</option>
+            <option value="1/800">1/800s</option>
+            <option value="1/1000">1/1000s</option>
+            <option value="1/1250">1/1250s</option>
+            <option value="1/1600">1/1600s</option>
+            <option value="1/2000">1/2000s</option>
+            <option value="1/2500">1/2500s</option>
+            <option value="1/3200">1/3200s</option>
+            <option value="1/4000">1/4000s</option>
+            <option value="1/5000">1/5000s</option>
+            <option value="1/6400">1/6400s</option>
+            <option value="1/8000">1/8000s</option>
 
-        <datalist id="shutter-list">
-            <option value="1/30s">
-            <option value="1/40s">
-            <option value="1/50s">
-        </datalist>
+        </select>
     </span>
     
     <span style="display:inline-block">
-        <label for="aperture-choice"  style="display:block">Aperture</label>
-        <input list="aperture-list" id="aperture-choice" name="aperture-choice"
-        onchange="setConfig('iris', 'aperture-list')" style="width: 100px"/>
-
-        <datalist id="aperture-list">
-          <option value="400">
-          <option value="500">
-          <option value="640">
-      </datalist>
+      <label for="aperture-list"  style="display:block">Aperture</label>
+        <select id="aperture-list" 
+                onclick="setConfig('iris', this.value)" 
+                style="width: 100px">
+          <option value="2.8">2.8</option>
+          <option value="3.2">3.2</option>
+          <option value="3.5">3.5</option>
+          <option value="4">4</option>
+          <option value="4.5">4.5</option>
+          <option value="5">5</option>
+          <option value="5.6" selected="selected">5.6</option>
+          <option value="6.3">6.3</option>
+          <option value="7.1">7.1</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="16">16</option>
+          <option value="18">18</option>
+          <option value="20">20</option>
+          <option value="22">22</option>         
+            
+        </select>
     </span>
     
     <span style="display:inline-block">
-      <label for="iso-choice" style="display:block">ISO</label>
-        <input list="iso-list" id="iso-choice" name="iso-choice"
-        onclick="setConfig('iso', 'value')" style="width: 100px"/>
-
-        <datalist id="iso-list">
-          <option value="">--Please choose an option--</option>  
-          <option value="400">
-            <option value="500">
-            <option value="640">
-            <option value="2000">
-        </datalist>
+      <label for="iso-list" style="display:block">ISO</label>
+        <select id="iso-list"    
+        onclick="setConfig('iso', this.value)" 
+                style="width: 100px">
+            <option value="400">400</option>
+            <option value="500">500</option>
+            <option value="640">640</option>
+            <option value="800">800</option>
+            <option value="1000">1000</option>
+            <option value="1250">1250</option>
+            <option value="1600">1600</option>
+            <option value="2000">2000</option>
+            <option value="2500" selected="selected">2500</option>
+            <option value="3200">3200</option>
+            <option value="4000">4000</option>
+            <option value="6400">6400</option>
+            <option value="8000">8000</option>
+            <option value="10000">10000</option>
+            <option value="12800">12800</option>
+            <option value="16000">16000</option>
+            <option value="20000">20000</option>
+            <option value="25600">25600</option>
+            <option value="32000">32000</option>
+            <option value="40000">40000</option>
+            <option value="51200">51200</option>
+            <option value="64000">64000</option>
+            <option value="80000">80000</option>
+            <option value="102400">102400</option>
+            <option value="128000">128000</option>
+          </select>
     </span>
     
     <span style="display:inline-block">
       <label for="wb-choice" style="display:block">White Balance</label>
-        <input list="wb-list" id="wb-choice" name="wb-choice"
-        onchange="setConfig('mwb', 'value')" style="width: 100px"/>
+        <input type="number" id="wb-choice" name="wb-choice"
+        min="2300" max="30000" step="100" value = "3500" onclick="setConfig('mwb', this.value)" 
+        style="width: 100px"/>
 
-        <datalist id="wb-list">
-            <option value="3100">
-            <option value="3500">
-            <option value="3800">
-            <option value="4000">
-        </datalist>
     </span>
     
   </div>
 
   <hr>
-  <div id="preview">
-  
-   <img id="stream" src="http://10.98.32.1/mjpeg_stream" />
-         
-  </div>
-     
-<div>
-  <span style="display:inline-block; margin-top: 20px;">
-    <label for="RR_min" style="display:block">Remaining time:</label>
-    <p class="info" id="RR_min"> 00 </p>
-  </span>
-    </div>
 
+<div >
+  <button class="button buttonOthers" onclick="showImage();">Streaming</button>
+  <button class="button buttonOthers" onclick="startRecordingPreview()">Recording</button>
 </div>
+
+<div id="preview">
+   
+  <img id="stream" src="http://10.98.32.1/mjpeg_stream" 
+        style="visibility:hidden"/>
+                    
+  </div>
+</div>
+
 </html>

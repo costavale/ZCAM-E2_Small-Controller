@@ -44,12 +44,12 @@ function httpGet(theUrl, VARf) {
                   case "ON":
                       checkbox.value = "OFF";
                       httpGet('http://10.98.32.1/ctrl/rec?action=','start');
-                      start();
+                      startRecording();
                       break;
                   case "OFF":
                       checkbox.value = "ON";
                       httpGet('http://10.98.32.1/ctrl/rec?action=','stop');
-                      end();
+                      endRecording();
                       break;
               }
               
@@ -68,11 +68,11 @@ function httpGet(theUrl, VARf) {
   
   var startTime, endTime;
   
-  function start() {
+  function startRecording() {
     startTime = performance.now();
   }
   
-  function end() {
+  function endRecording() {
     endTime = performance.now();
     var timeDiff = endTime - startTime; //in ms
     // strip the ms
@@ -136,3 +136,88 @@ function handleWindowControls() {
         }
     }
 }
+
+function showImage() {
+    document.getElementById('stream').style.visibility=   document.getElementById('stream').style.visibility == 'visible'? 'hidden' : 'visible';
+}
+
+// functions 
+let preview = document.getElementById("stream");
+let recording = document.getElementById("recording");
+let startButton = document.getElementById("startButton");
+let stopButton = document.getElementById("stopButton");
+let downloadButton = document.getElementById("downloadButton");
+let logElement = document.getElementById("log");
+
+let recordingTimeMS = 5000;
+
+function log(msg) {
+    logElement.innerHTML += `${msg}\n`;
+  }
+
+function wait(delayInMS) {
+    return new Promise((resolve) => setTimeout(resolve, delayInMS));
+}
+
+function startRecordingPreview(stream, lengthInMS) {
+    let recorder = new MediaRecorder(stream);
+    let data = [];
+  
+    recorder.ondataavailable = (event) => data.push(event.data);
+    recorder.start();
+    log(`${recorder.state} for ${lengthInMS / 1000} seconds…`);
+  
+    let stopped = new Promise((resolve, reject) => {
+      recorder.onstop = resolve;
+      recorder.onerror = (event) => reject(event.name);
+    });
+  
+    let recorded = wait(lengthInMS).then(
+      () => {
+        if (recorder.state === "recording") {
+          recorder.stop();
+        }
+      },
+    );
+  
+    return Promise.all([
+      stopped,
+      recorded
+    ])
+    .then(() => data);
+  }
+
+function stop(stream) {
+    stream.getTracks().forEach((track) => track.stop());
+}
+
+startButton.addEventListener("click", function() {
+    navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true
+    }).then((stream) => {
+      preview.srcObject = stream;
+      downloadButton.href = stream;
+      preview.captureStream = preview.captureStream || preview.mozCaptureStream;
+      return new Promise((resolve) => preview.onplaying = resolve);
+    }).then(() => startRecordingPreview(preview.captureStream(), recordingTimeMS))
+    .then ((recordedChunks) => {
+      let recordedBlob = new Blob(recordedChunks, { type: "video/webm" });
+      recording.src = URL.createObjectURL(recordedBlob);
+      downloadButton.href = recording.src;
+      downloadButton.download = "RecordedVideo.webm";
+  
+      log(`Successfully recorded ${recordedBlob.size} bytes of ${recordedBlob.type} media.`);
+    })
+    .catch((error) => {
+      if (error.name === "NotFoundError") {
+        log("Camera or microphone not found. Can't record.");
+      } else {
+        log(error);
+      }
+    });
+  }, false);
+
+stopButton.addEventListener("click", function() {
+    stop(preview.srcObject);
+  }, false);
